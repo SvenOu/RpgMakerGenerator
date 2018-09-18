@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 
-@Component("rmvImageEnemyService")
+@Component
 public class RmvImageEnemyServiceImpl implements RmvImageEnemyService {
     private static Logger log = Logger.getLogger(RmvImageEnemyServiceImpl.class.getSimpleName());
 

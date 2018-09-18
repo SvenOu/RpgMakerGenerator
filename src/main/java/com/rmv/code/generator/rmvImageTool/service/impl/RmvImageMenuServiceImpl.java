@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 
-@Component("rmvImageMenuService")
+@Component
 public class RmvImageMenuServiceImpl implements RmvImageMenuService {
     private static Logger log = Logger.getLogger(RmvImageMenuServiceImpl.class.getSimpleName());
 
