@@ -96,6 +96,7 @@ public class RmvImageServiceImpl implements RmvImageService {
             }
         }
 
+        generateActorHalfNoBorderFaces(mainGenerateDir, halfFaceHeight);
         generateActorHalfFaces(mainGenerateDir, halfFaceHeight);
 
         rmvImageMenuService.generatorMenuFaceDir();
@@ -112,7 +113,7 @@ public class RmvImageServiceImpl implements RmvImageService {
         int width = RMVConfig.FACE_SOURCE_img_battleHud_face_width;
         int height = RMVConfig.FACE_SOURCE_img_battleHud_face_height;
 
-        File[] gFaceFiles = new File(mainDir + "/Generate/Temp/SpitHalfFaces").listFiles();
+        File[] gFaceFiles = new File(mainDir + "/Generate/Temp/SpitHalfNoBorderFaces").listFiles();
         Consumer<BufferedImage> buffIta = new Consumer<BufferedImage>() {
             private int index = 0;
 
@@ -268,6 +269,51 @@ public class RmvImageServiceImpl implements RmvImageService {
 
     }
 
+    private void generateActorHalfNoBorderFaces(File mainGenerateDir, int height) throws IOException {
+        int width = height;
+        File[] gFaceFiles = mainGenerateDir.listFiles();
+
+        int oriFaceWidth = RMVConfig.FACE_SOURCE_IMAGE_WIDTH / RMVConfig.FACE_SOURCE_IMAGE_X;
+        int oriFaceHeight = RMVConfig.FACE_SOURCE_IMAGE_HEIGHT / RMVConfig.FACE_SOURCE_IMAGE_Y;
+
+        Consumer<BufferedImage> buffIta = new Consumer<BufferedImage>() {
+            private int index = 0;
+
+            @Override
+            public void accept(BufferedImage bufferedImage) {
+                bufferedImage = bufferedImage.getSubimage(
+                        (oriFaceWidth - width) / 8,
+                        (oriFaceHeight - width) / 6,
+                        width, width);
+
+                BufferedImage circleBuffer = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2 = circleBuffer.createGraphics();
+
+                g2.setClip(new Arc2D.Double(0, 0, width, width, 0, 360, Arc2D.OPEN));
+                g2.drawImage(bufferedImage, 0, 0, width, width, null);
+
+                JPanel dPanel = new JPanel();
+                dPanel.paintAll(g2);
+
+                try {
+                    File actorhudFloder = new File(mainDir + "/Generate/Temp/SpitHalfNoBorderFaces");
+                    if (!actorhudFloder.exists()) {
+                        actorhudFloder.mkdirs();
+                    }
+                    ImageIO.write(circleBuffer, "png", new File(actorhudFloder.getAbsolutePath() + "/" + gFaceFiles[index].getName()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                index++;
+            }
+        };
+
+        Thumbnails.of(gFaceFiles)
+                .scale(0.65)
+                .outputQuality(1)
+                .iterableBufferedImages()
+                .forEach(buffIta);
+    }
     private void generateActorHalfFaces(File mainGenerateDir, int height) throws IOException {
         int width = height;
         File[] gFaceFiles = mainGenerateDir.listFiles();
