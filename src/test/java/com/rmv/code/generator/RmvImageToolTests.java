@@ -1,5 +1,6 @@
 package com.rmv.code.generator;
 
+import com.rmv.code.generator.rmvImageTool.service.RmvAudioService;
 import com.rmv.code.generator.rmvImageTool.service.RmvImageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,5 +24,12 @@ public class RmvImageToolTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Autowired
+    private RmvAudioService rmvAudioService;
+    @Test
+    public void generateAudio(){
+        rmvAudioService.generatorAudio();
     }
 }
